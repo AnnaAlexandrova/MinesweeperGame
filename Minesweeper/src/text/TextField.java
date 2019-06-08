@@ -45,17 +45,17 @@ class TextField {
     }
 
     void update() {
-        for (int x = 0; x < game.getHeight(); x++) {
-            for (int y = 0; y < game.getWidth(); y++) {
-                if (game.getIsOpened(x, y) && textField[x][y].equals(unknown)) {
-                    if (game.getCell(x, y) == 1) {
-                        textField[x][y] = mine;
+        for (int down = 0; down < game.getHeight(); down++) {
+            for (int across = 0; across < game.getWidth(); across++) {
+                if (game.isOpened(down, across) && textField[down][across].equals(unknown)) {
+                    if (game.getCell(down, across) == 1) {
+                        textField[down][across] = mine;
                     } else {
-                        int minesCount = game.calcMines(x, y);
+                        int minesCount = game.calcMines(down, across);
                         if (minesCount > 0) {
-                            textField[x][y] = Integer.toString(minesCount);
+                            textField[down][across] = Integer.toString(minesCount);
                         } else {
-                            textField[x][y] = empty;
+                            textField[down][across] = empty;
                         }
                     }
                 }
@@ -66,15 +66,16 @@ class TextField {
     }
 
     void gameEnd() {
-        for (int x = 0; x < game.getHeight(); x++) {
-            for (int y = 0; y < game.getWidth(); y++) {
-                if (game.getCell(x, y) == 0) {
-                    textField[x][y] = empty;
+        for (int down = 0; down < game.getHeight(); down++) {
+            for (int across = 0; across < game.getWidth(); across++) {
+                if (game.getCell(down, across) == 0) {
+                    textField[down][across] = empty;
                 } else {
-                    textField[x][y] = mine;
+                    textField[down][across] = mine;
                 }
             }
         }
         update();
+        System.out.println(game.getGameTime());
     }
 }

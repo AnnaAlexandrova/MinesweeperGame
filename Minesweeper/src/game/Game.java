@@ -10,18 +10,23 @@ public class Game {
     private int minesCount;
     private boolean isEnd;
     private boolean isWin;
+    private int closedCellsCount;
+    private GameTimer timer;
 
 
     public Game() {
         this.height = 9;
         this.width = 9;
         this.minesCount = 10;
+        this.closedCellsCount = height * width;
 
         this.cells = new int[height][width];
         this.isOpened = new boolean[height][width];
 
         this.isEnd = false;
         this.isWin = false;
+
+        this.timer = new GameTimer(this);
 
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {
@@ -30,18 +35,22 @@ public class Game {
             }
         }
         generateMines(minesCount);
+        timer.start();
     }
 
     public Game(int height, int width, int minesCount) {
         this.height = height;
         this.width = width;
         this.minesCount = minesCount;
+        this.closedCellsCount = height * width;
 
         this.cells = new int[height][width];
         this.isOpened = new boolean[height][width];
 
         this.isEnd = false;
         this.isWin = false;
+
+        this.timer = new GameTimer(this);
 
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {
@@ -50,6 +59,7 @@ public class Game {
             }
         }
         generateMines(minesCount);
+        timer.start();
     }
 
     public int getHeight() {
@@ -60,79 +70,91 @@ public class Game {
         return cells[0].length;
     }
 
-    public boolean getIsOpened(int x, int y) {
-        return isOpened[x][y];
+    public boolean isOpened(int down, int across) {
+        return isOpened[down][across];
     }
 
-    public boolean getIsEnd() {
+    public boolean isEnd() {
         return isEnd;
     }
 
-    public boolean getIsWin() {
+    public boolean isWin() {
         return isWin;
     }
 
-    public int getCell(int x, int y) {
-        return cells[x][y];
+    public int getCell(int down, int across) {
+        return cells[down][across];
     }
 
-    private void generateMines(int minesCount) {
-        Random randX = new Random();
-        Random randY = new Random();
+    public void setCell(int down, int across, int value) {
+        if (value < 0 || value > 1) {
+            return;
+        }
+        this.cells[down][across] = value;
+    }
+
+    public void generateMines(int minesCount) {
+        Random randDown = new Random();
+        Random randAcross = new Random();
         for (int i = 1; i <= minesCount; i++) {
-            int x = randX.nextInt(height);
-            int y = randY.nextInt(width);
-            if (cells[x][y] == 1) {
+            int down = randDown.nextInt(height);
+            int across = randAcross.nextInt(width);
+            if (cells[down][across] == 1) {
                 i--;
             } else {
-                cells[x][y] = 1;
+                cells[down][across] = 1;
             }
         }
     }
 
-    private boolean isOutOfBounds(int x, int y) {
-        return (x < 0 || y < 0) || (x >= height || y >= width);
+    private boolean isOutOfBounds(int down, int across) {
+        return (down < 0 || across < 0) || (down >= height || across >= width);
     }
 
-    public void openCell(int x, int y) {
-        if (isOutOfBounds(x, y)) {
+    public void openCell(int down, int across) {
+        if (isOutOfBounds(down, across)) {
             return;
         }
-        if (isOpened[x][y]) {
+        if (isOpened[down][across]) {
             return;
         }
-        isOpened[x][y] = true;
+        isOpened[down][across] = true;
+        closedCellsCount--;
 
-        if (cells[x][y] == 1) {
+        if (cells[down][across] == 1) {
             isEnd = true;
             isWin = false;
             System.out.println("BANG!");
+            timer.stop();
             return;
         }
-        if (calcMines(x, y) > 0) {
+        if (calcMines(down, across) > 0) {
             return;
         }
 
-        openCell(x - 1, y - 1);
-        openCell(x + 1, y - 1);
-        openCell(x - 1, y + 1);
-        openCell(x + 1, y + 1);
+        openCell(down - 1, across - 1);
+        openCell(down + 1, across - 1);
+        openCell(down - 1, across + 1);
+        openCell(down + 1, across + 1);
 
-        openCell(x - 1, y);
-        openCell(x, y - 1);
-        openCell(x + 1, y);
-        openCell(x, y + 1);
+        openCell(down - 1, across);
+        openCell(down, across - 1);
+        openCell(down + 1, across);
+        openCell(down, across + 1);
     }
 
-    public int calcMines(int x, int y) {
-        if (isOutOfBounds(x, y)) {
+    public int calcMines(int down, int across) {
+        if (cells[down][across] == 1) {
+            return 0;
+        }
+        if (isOutOfBounds(down, across)) {
             return 0;
         }
         int count = 0;
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                if (!isOutOfBounds(x + i, y + j)) {
-                    if (cells[i + x][j + y] == 1) {
+                if (!isOutOfBounds(down + i, across + j)) {
+                    if (cells[i + down][j + across] == 1) {
                         count++;
                     }
                 }
@@ -141,20 +163,21 @@ public class Game {
         return count;
     }
 
-    public void isVictory() {
-        int closedCellsCount = 0;
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                if (!isOpened[i][j]) {
-                    closedCellsCount++;
-                }
-            }
-            if (closedCellsCount - minesCount != 0) {
-                isWin = false;
-            } else {
-                isWin = true;
-                isEnd = true;
-            }
+    public void isVictory(int down, int across) {
+        if (cells[down][across] == 1) {
+            return;
+        }
+        if (closedCellsCount - minesCount != 0) {
+            isWin = false;
+        } else {
+            isWin = true;
+            isEnd = true;
+            timer.stop();
         }
     }
+
+    public String getGameTime() {
+        return timer.toString();
+    }
 }
+
