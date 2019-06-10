@@ -26,7 +26,7 @@ public class Game {
         this.isEnd = false;
         this.isWin = false;
 
-        this.timer = new GameTimer(this);
+        this.timer = new GameTimer();
 
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {
@@ -50,7 +50,7 @@ public class Game {
         this.isEnd = false;
         this.isWin = false;
 
-        this.timer = new GameTimer(this);
+        this.timer = new GameTimer();
 
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[0].length; j++) {
@@ -176,8 +176,12 @@ public class Game {
         }
     }
 
-    public String getGameTime() {
+    public String printGameTime() {
         return timer.toString();
+    }
+
+    public float getGameTime() {
+        return timer.getGameTime();
     }
 }
 

@@ -2,6 +2,8 @@ package text;
 
 import game.AboutGame;
 import game.Game;
+import game.HighScoresTable;
+import game.ScoreRecord;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -12,6 +14,11 @@ import java.util.Scanner;
 
 public class TextGameRunner {
     private Game game;
+    private HighScoresTable table = new HighScoresTable();
+    private final String EXIT = "Exit";
+    private final String NEW_GAME = "New game";
+    private final String ABOUT = "About";
+    private final String HIGH_SCORES = "High scores";
 
     public void play() {
         initializeGame();
@@ -47,15 +54,19 @@ public class TextGameRunner {
                     String acrossScan = scannerAcross.nextLine();
 
                     try {
-                        if (acrossScan.equalsIgnoreCase("Exit")) {
+                        if (acrossScan.equalsIgnoreCase(EXIT)) {
                             return;
-                        } else if (acrossScan.equalsIgnoreCase("New game")) {
+                        } else if (acrossScan.equalsIgnoreCase(NEW_GAME)) {
                             TextGameRunner newGame = new TextGameRunner();
                             newGame.play();
-                        } else if (acrossScan.equalsIgnoreCase("About")) {
+                        } else if (acrossScan.equalsIgnoreCase(ABOUT)) {
                             AboutGame about = new AboutGame();
                             about.aboutGame();
                             System.out.println();
+                            continue;
+                        } else if (acrossScan.equalsIgnoreCase(HIGH_SCORES)) {
+                            table.print();
+                            continue;
                         } else {
                             across = Integer.parseInt(acrossScan);
                         }
@@ -64,15 +75,19 @@ public class TextGameRunner {
                         System.out.println("Введите координату по вертикали");
                         String downScan = scannerDown.nextLine();
 
-                        if (downScan.equalsIgnoreCase("Exit")) {
+                        if (downScan.equalsIgnoreCase(EXIT)) {
                             return;
-                        } else if (downScan.equalsIgnoreCase("New game")) {
+                        } else if (downScan.equalsIgnoreCase(NEW_GAME)) {
                             TextGameRunner newGame = new TextGameRunner();
                             newGame.play();
-                        } else if (downScan.equalsIgnoreCase("About")) {
+                        } else if (downScan.equalsIgnoreCase(ABOUT)) {
                             AboutGame about = new AboutGame();
                             about.aboutGame();
                             System.out.println();
+                            continue;
+                        } else if (downScan.equalsIgnoreCase(HIGH_SCORES)) {
+                            table.print();
+                            continue;
                         } else {
                             down = Integer.parseInt(downScan);
                         }
@@ -95,6 +110,9 @@ public class TextGameRunner {
                     }
                 }
             }
+        }
+        if (game.isWin()) {
+            rememberRecord();
         }
     }
 
@@ -167,5 +185,13 @@ public class TextGameRunner {
                 }
             }
         }
+    }
+
+    private void rememberRecord() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Введите ваше имя");
+        String userName = scanner.nextLine();
+
+        table.addRecord(new ScoreRecord(userName, game.getGameTime()));
     }
 }

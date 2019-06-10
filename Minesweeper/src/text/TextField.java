@@ -76,6 +76,6 @@ class TextField {
             }
         }
         update();
-        System.out.println(game.getGameTime());
+        System.out.println(game.printGameTime());
     }
 }

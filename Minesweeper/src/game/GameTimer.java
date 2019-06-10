@@ -2,29 +2,33 @@ package game;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Time;
+import java.util.Date;
 import javax.swing.*;
 
 public class GameTimer implements ActionListener {
     private Timer timer;
-    private Time time = new Time(0);
+    private Date date = new Date();
     private float gameTime;
 
-    public GameTimer(Game game) {
+    GameTimer() {
         this.timer = new Timer(100, this);
         this.gameTime = 0;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        gameTime = new Time(0).getTime() - time.getTime();
+        gameTime = new Date().getTime() - date.getTime();
     }
 
-    public void start() {
+    float getGameTime() {
+        return gameTime;
+    }
+
+    void start() {
         timer.start();
     }
 
-    public void stop() {
+    void stop() {
         timer.stop();
     }
 
