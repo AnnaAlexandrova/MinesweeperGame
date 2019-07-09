@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class AboutGame {
-    private String pathToFile = "C:/Users/fytyr/IdeaProjects/MinesweeperGame/Minesweeper/src/resources/";
+    private String pathToFile = "./Minesweeper/src/resources/";
 
     public void aboutGame() throws FileNotFoundException {
         try (Scanner scanner = new Scanner(
