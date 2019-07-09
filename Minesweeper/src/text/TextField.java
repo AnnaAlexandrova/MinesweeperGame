@@ -28,9 +28,7 @@ class TextField {
         System.out.printf("%n---|---");
 
         String s = "---";
-        int k = 1;
-        while (k < textField[0].length) {
-            k++;
+        for (int k = 1; k < textField[0].length; k++) {
             System.out.print(s);
         }
         System.out.println();
@@ -48,7 +46,7 @@ class TextField {
         for (int down = 0; down < game.getHeight(); down++) {
             for (int across = 0; across < game.getWidth(); across++) {
                 if (game.isOpened(down, across) && textField[down][across].equals(unknown)) {
-                    if (game.getCell(down, across) == 1) {
+                    if (game.isMine(down, across)) {
                         textField[down][across] = mine;
                     } else {
                         int minesCount = game.calcMines(down, across);
@@ -68,13 +66,14 @@ class TextField {
     void gameEnd() {
         for (int down = 0; down < game.getHeight(); down++) {
             for (int across = 0; across < game.getWidth(); across++) {
-                if (game.getCell(down, across) == 0) {
+                if (!game.isMine(down, across)) {
                     textField[down][across] = empty;
                 } else {
                     textField[down][across] = mine;
                 }
             }
         }
+        game.stopTimer();
         update();
         System.out.println(game.printGameTime());
     }

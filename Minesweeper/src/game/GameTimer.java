@@ -33,9 +33,9 @@ public class GameTimer implements ActionListener {
     }
 
     public String toString() {
-        int minutes = (int) gameTime / 1000 / 60;
-        int seconds = (int) gameTime / 1000 % 60;
-        int milliseconds = (int) gameTime % 1000 / 10;
-        return (String.format("%02d:%02d.%02d", minutes, seconds, milliseconds));
+        final int MINUTES = (int) gameTime / 1000 / 60;
+        final int SECONDS = (int) gameTime / 1000 % 60;
+        final int MILLISECONDS = (int) gameTime % 1000 / 10;
+        return (String.format("%02d:%02d.%02d", MINUTES, SECONDS, MILLISECONDS));
     }
 }

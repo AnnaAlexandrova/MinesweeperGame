@@ -67,4 +67,14 @@ public class HighScoresTable {
             System.out.println("В этой игре еще никто не побеждал");
         }
     }
+
+    public ArrayList<String> showHighScores() throws FileNotFoundException {
+        ArrayList<String> records = new ArrayList<>();
+        try (Scanner scanner = new Scanner(new FileInputStream(path))) {
+            while (scanner.hasNextLine()) {
+                records.add(scanner.nextLine());
+            }
+        }
+        return records;
+    }
 }

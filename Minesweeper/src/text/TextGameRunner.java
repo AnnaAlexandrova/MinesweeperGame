@@ -44,6 +44,7 @@ public class TextGameRunner {
                 textField.gameEnd();
                 break;
             } else if (game.isEnd() && !game.isWin()) {
+                System.out.println("BANG!");
                 System.out.println("Вы проиграли!");
                 textField.gameEnd();
                 break;
@@ -149,6 +150,7 @@ public class TextGameRunner {
         } else {
             this.game = new Game();
         }
+        game.startTimer();
     }
 
     private void firstMove() {
@@ -172,9 +174,9 @@ public class TextGameRunner {
                 down--;
                 across--;
 
-                if (game.getCell(down, across) == 1) {
+                if (game.isMine(down, across)) {
                     game.generateMines(1);
-                    game.setCell(down, across, 0);
+                    game.setMine(down, across, false);
                 }
 
                 game.openCell(down, across);

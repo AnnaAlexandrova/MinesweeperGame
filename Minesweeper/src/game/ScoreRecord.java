@@ -14,9 +14,9 @@ public class ScoreRecord {
     }
 
     public String toString() {
-        int minutes = (int) time / 1000 / 60;
-        int seconds = (int) time / 1000 % 60;
-        int milliseconds = (int) time % 1000 / 10;
-        return (String.format("%s: %02d:%02d.%02d", name, minutes, seconds, milliseconds));
+        final int MINUTES = (int) time / 1000 / 60;
+        final int SECONDS = (int) time / 1000 % 60;
+        final int MILLISECONDS = (int) time % 1000 / 10;
+        return (String.format("%s: %02d:%02d.%02d", name, MINUTES, SECONDS, MILLISECONDS));
     }
 }
