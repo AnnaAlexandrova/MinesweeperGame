@@ -46,6 +46,13 @@ public class TimerLabel extends JLabel implements ActionListener {
         gameTimer.stop();
     }
 
+    void startNewGame() {
+        date = new Date();
+        gameTimer = new Timer(100, this);
+        time = 0;
+        start();
+    }
+
     @Override
     public String toString() {
         final int MINUTES = (int) time / 1000 / 60;

@@ -6,13 +6,13 @@ import game.ScoreRecord;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 
 public class GameView {
     private Game game;
     private GameFrame gameFrame;
     private GameMouseClickListener mouseClickListener = new GameMouseClickListener();
+    private GameKeyListener gameKeyListener = new GameKeyListener();
     private int rowsCount;
     private int colsCount;
     private JButton[][] cells;
@@ -24,7 +24,7 @@ public class GameView {
     }
 
     private void run() {
-        initGame();
+        game = new Game();
 
         this.colsCount = game.getWidth();
         this.rowsCount = game.getHeight();
@@ -36,6 +36,7 @@ public class GameView {
                 JButton cell = new JButton();
                 cell.setMaximumSize(new Dimension(30, 30));
                 cell.addMouseListener(mouseClickListener);
+                cell.addKeyListener(gameKeyListener);
                 gameFrame.getGameField().add(cell);
                 cells[i][j] = cell;
             }
@@ -66,6 +67,29 @@ public class GameView {
 
         @Override
         public void mouseClicked(MouseEvent e) {
+
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            receiveCellCoordinates(e);
+
+            if (!SwingUtilities.isMiddleMouseButton(e)) {
+                button = e.getButton();
+            }
+
+            if (SwingUtilities.isLeftMouseButton(e)) {
+                if (prevDown == down && prevAcross == across) {
+                    if (game.isOpened(down, across) && game.calcMines(down, across) > 0) {
+                        findNeighboringFlags(down, across);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
             receiveCellCoordinates(e);
 
             MinesCountLabel minesCount = gameFrame.getMinesCountLabel();
@@ -97,7 +121,6 @@ public class GameView {
                         gameEnd();
                         youWin();
                     }
-                    game.calcMines(down, across);
                     update();
                 }
             } else if (SwingUtilities.isMiddleMouseButton(e)) {
@@ -105,28 +128,7 @@ public class GameView {
                     findNeighboringFlags(down, across);
                 }
             }
-        }
 
-        @Override
-        public void mousePressed(MouseEvent e) {
-            receiveCellCoordinates(e);
-
-            if (!SwingUtilities.isMiddleMouseButton(e)) {
-                button = e.getButton();
-            }
-
-            if (SwingUtilities.isLeftMouseButton(e)) {
-                if (prevDown == down && prevAcross == across) {
-                    if (game.isOpened(down, across) && game.calcMines(down, across) > 0) {
-                        findNeighboringFlags(down, across);
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            receiveCellCoordinates(e);
             if (SwingUtilities.isLeftMouseButton(e)) {
                 prevDown = down;
                 prevAcross = across;
@@ -150,40 +152,32 @@ public class GameView {
         }
     }
 
-    private void initGame() {
-        int result = JOptionPane.showConfirmDialog(gameFrame, "Хотите ввести параметры игры?",
-                "Параметры игры", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+    private class GameKeyListener implements KeyListener {
+        @Override
+        public void keyTyped(KeyEvent e) {
 
-        if (result == JOptionPane.YES_OPTION) {
-            Object[] size = new Object[30];
-            int x = 0;
-            for (int i = 0; i < size.length; i++) {
-                x += 1;
-                size[i] = Integer.toString(x);
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            GameMenu gameMenu = gameFrame.getGameMenu();
+
+            if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_N) {
+                gameMenu.startNewGame();
+            } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_O) {
+                gameMenu.changeParameters();
+            } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S) {
+                gameMenu.showGameInfo();
+            } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_R) {
+                gameMenu.showHighScoresTable();
+            } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_E) {
+                gameMenu.gameExit();
             }
+        }
 
-            String width = (String) JOptionPane.showInputDialog(gameFrame,
-                    "Выберите количество ячеек по горизонтали", "Введите параметры игры",
-                    JOptionPane.QUESTION_MESSAGE, null, size, size[0]);
+        @Override
+        public void keyReleased(KeyEvent e) {
 
-            String height = (String) JOptionPane.showInputDialog(gameFrame,
-                    "Выберите количество ячеек по вертикали", "Введите параметры игры",
-                    JOptionPane.QUESTION_MESSAGE, null, size, size[0]);
-
-            Object[] mines = new Object[Integer.parseInt(height) * Integer.parseInt(width) / 2];
-            int y = 0;
-            for (int i = 0; i < mines.length; i++) {
-                y += 1;
-                mines[i] = Integer.toString(y);
-            }
-
-            String minesCount = (String) JOptionPane.showInputDialog(gameFrame,
-                    "Выберите количество мин", "Введите параметры игры",
-                    JOptionPane.QUESTION_MESSAGE, null, mines, mines[0]);
-
-            game = new Game(Integer.parseInt(height), Integer.parseInt(width), Integer.parseInt(minesCount));
-        } else {
-            game = new Game();
         }
     }
 
@@ -233,6 +227,7 @@ public class GameView {
                         cells[i][j].setIcon(new ImageIcon(path + "flag.png"));
                     } else {
                         cells[i][j].setIcon(null);
+                        cells[i][j].setBackground(null);
                     }
                 }
             }
@@ -243,6 +238,8 @@ public class GameView {
         int foundedMines = 0;
         for (int i = 0; i < rowsCount; i++) {
             for (int j = 0; j < colsCount; j++) {
+                cells[i][j].removeMouseListener(mouseClickListener);
+
                 if (game.isFlag(i, j)) {
                     if (game.isMine(i, j)) {
                         cells[i][j].setIcon(new ImageIcon(path + "flag.png"));
@@ -274,6 +271,8 @@ public class GameView {
                             youLose();
                             break;
                         }
+                    } else if (game.isFlag(i + down, j + across)) {
+                        return;
                     }
                 }
             }
@@ -285,7 +284,6 @@ public class GameView {
                 gameEnd();
                 youWin();
             }
-            game.calcMines(down, across);
             update();
         }
     }
@@ -293,30 +291,42 @@ public class GameView {
     private void youWin() {
         JOptionPane.showMessageDialog(gameFrame,
                 "Вы победили!",
-                "YOU WIN!", JOptionPane.INFORMATION_MESSAGE);
+                "Победа!", JOptionPane.INFORMATION_MESSAGE);
         rememberRecord();
     }
 
     private void youLose() {
         JOptionPane.showMessageDialog(gameFrame,
                 "Вы проиграли!",
-                "BANG!", JOptionPane.INFORMATION_MESSAGE);
+                "Взрыв!", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void rememberRecord() {
-        String userName = JOptionPane.showInputDialog(gameFrame, "<html><h2>Введите ваше имя");
-
-        table.addRecord(new ScoreRecord(userName, gameFrame.getTimerLabel().getTime()));
+        String userName;
+        try {
+            userName = JOptionPane.showInputDialog(gameFrame, "<html><h2>Введите ваше имя").trim();
+        } catch (NullPointerException e) {
+            return;
+        }
+        if (userName.length() > 0) {
+            table.addRecord(new ScoreRecord(userName, gameFrame.getTimerLabel().getTime()));
+        }
     }
 
-    void startNewGame() {
+    void startNewGame(int colsCount, int rowsCount, int minesCount) {
         SwingUtilities.invokeLater(() -> {
-            gameFrame.getTimerLabel().stop();
-            initGame();
+            this.game = new Game(rowsCount, colsCount, minesCount);
 
-            this.colsCount = game.getWidth();
-            this.rowsCount = game.getHeight();
-            this.gameFrame = new GameFrame(colsCount, rowsCount, game.getMinesCount(), this);
+            this.colsCount = colsCount;
+            this.rowsCount = rowsCount;
+
+            gameFrame.getTimerLabel().startNewGame();
+            gameFrame.getMinesCountLabel().setText(Integer.toString(game.getMinesCount()));
+
+            gameFrame.setWidth(colsCount);
+            gameFrame.setHeight(rowsCount);
+
+            gameFrame.setNewGame(colsCount, rowsCount);
 
             this.cells = new JButton[rowsCount][colsCount];
             for (int i = 0; i < rowsCount; i++) {
@@ -324,10 +334,12 @@ public class GameView {
                     JButton cell = new JButton();
                     cell.setMaximumSize(new Dimension(30, 30));
                     cell.addMouseListener(mouseClickListener);
+                    cell.addKeyListener(gameKeyListener);
                     gameFrame.getGameField().add(cell);
                     cells[i][j] = cell;
                 }
             }
+            update();
         });
     }
 }

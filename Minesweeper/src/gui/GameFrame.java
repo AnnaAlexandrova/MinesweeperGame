@@ -5,17 +5,19 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class GameFrame extends JFrame {
+    private JFrame gameFrame;
     private int width;
     private int height;
     private JPanel gameField;
     private TimerLabel timerLabel;
     private MinesCountLabel minesCountLabel;
+    private GameMenu gameMenu;
+    private final int CELL_SIZE = 35;
 
     GameFrame(int colsCount, int rowsCount, int minesCount, GameView gameView) {
-        JFrame gameFrame = new JFrame("Сапёр");
+        this.gameFrame = new JFrame("Сапёр");
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        int CELL_SIZE = 35;
         this.width = colsCount * CELL_SIZE + 30;
         this.height = rowsCount * CELL_SIZE + 65;
 
@@ -29,7 +31,7 @@ public class GameFrame extends JFrame {
         gameFrame.setBounds(x, y, width, height);
 
         this.gameField = new JPanel(new GridLayout(rowsCount, colsCount));
-        gameField.setSize(gameField.getWidth(), gameFrame.getHeight());
+        gameField.setSize(gameFrame.getWidth(), gameFrame.getHeight());
         gameField.setBorder(new EmptyBorder(1, 1, 1, 1));
 
         gameFrame.add(gameField, BorderLayout.CENTER);
@@ -56,9 +58,14 @@ public class GameFrame extends JFrame {
 
         gameFrame.add(timerField, BorderLayout.PAGE_START);
 
-        GameMenu gameMenu = new GameMenu(gameView);
+        gameMenu = new GameMenu(gameView);
         gameFrame.setJMenuBar(gameMenu);
         gameFrame.setVisible(true);
+
+        UIManager.put("OptionPane.yesButtonText", "Да");
+        UIManager.put("OptionPane.noButtonText", "Нет");
+        UIManager.put("OptionPane.cancelButtonText", "Отмена");
+        UIManager.put("OptionPane.okButtonText", "Ок");
     }
 
     public int getWidth() {
@@ -79,5 +86,43 @@ public class GameFrame extends JFrame {
 
     MinesCountLabel getMinesCountLabel() {
         return minesCountLabel;
+    }
+
+    GameMenu getGameMenu() {
+        return gameMenu;
+    }
+
+    void setWidth(int colsCount) {
+        this.width = colsCount * CELL_SIZE + 30;
+    }
+
+    void setHeight(int rowsCount) {
+        this.height = rowsCount * CELL_SIZE + 65;
+    }
+
+    void setNewGame(int colsCount, int rowsCount) {
+        gameFrame.remove(gameField);
+
+        this.width = colsCount * CELL_SIZE + 30;
+        this.height = rowsCount * CELL_SIZE + 65;
+
+        gameFrame.setSize(width, height);
+        gameFrame.setMinimumSize(new Dimension(300, 400));
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (screenSize.width - width) / 2;
+        int y = (screenSize.height - height) / 2;
+        gameFrame.setBounds(x, y, width, height);
+
+        JPanel newGame = new JPanel(new GridLayout(rowsCount, colsCount));
+        gameField.setSize(gameFrame.getWidth(), gameFrame.getHeight());
+        gameField.setBorder(new EmptyBorder(1, 1, 1, 1));
+
+        gameFrame.add(newGame, BorderLayout.CENTER);
+
+        this.gameField = newGame;
+
+        gameFrame.repaint();
+        gameFrame.revalidate();
     }
 }

@@ -1,8 +1,8 @@
-Goal of the game: is to open all cells which don't contain mines in the shortest time. You win if open all empty cells and you lose if open cell with mine.
-Numbers: numbers denote the number of mines in adjacent cells. They allow you to determine which of the adjacent cells are safe.
-The timer: the timer counts the time in seconds spent clearing the field.
-The opening of cells: for text interface - at first you should enter coordinates of the cell which you want to open across, then down. It's impossible to lose on the first move.
-HighScores table: in this table you can see the best five records in this game.
-MinesCounter: show you number of undetected mines.
-Flags: click on the where yuo think that mine could be. This cell will be marked with flag.
-Accord: if all mines near number marked with flags click on it with the mouse wheel, double click on left mouse button or simultaneously press the left and right mouse button to open remaining adjacent cells.
+Цель игры: нужно открыть все ячейки, в которых нет мин за кратчайший срок. Вы победите, если откроете все пустые ячейки, и проиграете, если откроете ячейку с миной.
+Числа: числа обозначают количество мин в соседних ячейках. Они позволяют определить, какие из соседних ячеек безопасны.
+Таймер: таймер считает время в секундах, потраченное на очистку поля.
+Открытие ячеек: ячейка открывается нажатием на нее левой кнопкой мыши. Невозможно проиграть с первого хода.
+Таблица рекордов: в этой таблице вы видите пять лучших результатов в этой игре.
+Счетчик мин: показывает количество необнаруженных мин
+Флаги: нажмите на ячейку, в которой может быть мина. Эта ячейка будет помечена флагом.
+Быстрое открытие ячеек: если все мины рядом с числом, отмечены флажками, щелкните по нему колесом мыши или дважды щелкните левой кнопкой мыши или одновременно нажмите левую и правую кнопки мыши, чтобы открыть оставшиеся соседние ячейки.

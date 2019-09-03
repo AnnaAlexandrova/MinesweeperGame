@@ -14,38 +14,90 @@ class GameMenu extends JMenuBar {
         this.game = game;
         JMenu menu = new JMenu("Меню");
 
-        JMenuItem newGame = new JMenuItem("Новая игра");
+        JMenuItem newGame = new JMenuItem("Новая игра CTRL + N");
         newGame.addActionListener(e -> startNewGame());
         menu.add(newGame);
 
-        JMenuItem about = new JMenuItem("Справка");
+        JMenuItem options = new JMenuItem("Настройки CTRL + O");
+        options.addActionListener(e -> changeParameters());
+        menu.add(options);
+
+        JMenuItem about = new JMenuItem("Справка CTRL + S");
         about.addActionListener(e -> showGameInfo());
         menu.add(about);
 
-        JMenuItem highScores = new JMenuItem("Лучшие результаты");
+        JMenuItem highScores = new JMenuItem("Лучшие результаты CTRL + R");
         highScores.addActionListener(e -> showHighScoresTable());
         menu.add(highScores);
 
-        JMenuItem exit = new JMenuItem("Выход");
+        JMenuItem exit = new JMenuItem("Выход Ctrl + E");
         exit.addActionListener(e -> gameExit());
         menu.add(exit);
 
         add(menu);
     }
 
-    private void startNewGame() {
+    void startNewGame() {
         int userAnswer = JOptionPane.showConfirmDialog(this, "Начать новую игру?",
                 "Окно подтверждения", JOptionPane.YES_NO_OPTION);
         if (userAnswer == JOptionPane.YES_OPTION) {
-            game.startNewGame();
+            int colsCount = 9;
+            int rowsCount = 9;
+            int minesCount = 10;
+
+            game.startNewGame(colsCount, rowsCount, minesCount);
         }
     }
 
-    private void showGameInfo() {
+    void changeParameters() {
+        int result = JOptionPane.showConfirmDialog(this, "Хотите изменить параметры игры?",
+                "Параметры игры", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        if (result == JOptionPane.YES_OPTION) {
+            Object[] fieldWidth = new Object[30];
+            int x = 0;
+            for (int i = 0; i < fieldWidth.length; i++) {
+                x += 1;
+                fieldWidth[i] = Integer.toString(x);
+            }
+
+            String width = (String) JOptionPane.showInputDialog(this,
+                    "Выберите количество ячеек по горизонтали", "Выберите параметры игры",
+                    JOptionPane.QUESTION_MESSAGE, null, fieldWidth, fieldWidth[0]);
+
+            Object[] fieldHeight = new Object[16];
+            int y = 0;
+            for (int i = 0; i < fieldHeight.length; i++) {
+                y += 1;
+                fieldHeight[i] = Integer.toString(y);
+            }
+
+            String height = (String) JOptionPane.showInputDialog(this,
+                    "Выберите количество ячеек по вертикали", "Выберите параметры игры",
+                    JOptionPane.QUESTION_MESSAGE, null, fieldHeight, fieldHeight[0]);
+
+            Object[] mines = new Object[Integer.parseInt(height) * Integer.parseInt(width) / 2];
+            int z = 0;
+            for (int i = 0; i < mines.length; i++) {
+                z += 1;
+                mines[i] = Integer.toString(z);
+            }
+
+            String minesCount = (String) JOptionPane.showInputDialog(this,
+                    "Выберите количество мин", "Выберите параметры игры",
+                    JOptionPane.QUESTION_MESSAGE, null, mines, mines[0]);
+
+            game.startNewGame(Integer.parseInt(width), Integer.parseInt(height), Integer.parseInt(minesCount));
+        }
+    }
+
+    void showGameInfo() {
         AboutGame aboutGame = new AboutGame();
+        UIManager.put("OptionPane.okButtonText", "Далее");
+
         try {
             for (int i = 0; i < aboutGame.showInfo().size(); i++) {
-                JTextArea textArea = new JTextArea(aboutGame.showInfo().get(i), 1, 50);
+                JTextArea textArea = new JTextArea(aboutGame.showInfo().get(i), 1, 80);
                 textArea.setWrapStyleWord(true);
                 textArea.setLineWrap(true);
                 textArea.setOpaque(false);
@@ -54,7 +106,7 @@ class GameMenu extends JMenuBar {
                 textArea.setFocusable(false);
 
                 int userAnswer = JOptionPane.showConfirmDialog(this, textArea,
-                        "About game", JOptionPane.OK_CANCEL_OPTION);
+                        "Справка", JOptionPane.OK_CANCEL_OPTION);
 
                 if (userAnswer == JOptionPane.CANCEL_OPTION) {
                     return;
@@ -65,7 +117,7 @@ class GameMenu extends JMenuBar {
         }
     }
 
-    private void showHighScoresTable() {
+    void showHighScoresTable() {
         JTable table = new JTable(5, 1);
         table.setShowGrid(false);
         Font font = new Font("Verdana", Font.BOLD, 12);
@@ -83,7 +135,7 @@ class GameMenu extends JMenuBar {
         }
     }
 
-    private void gameExit() {
+    void gameExit() {
         int userAnswer = JOptionPane.showConfirmDialog(this, "Выйти из игры?",
                 "Окно подтверждения", JOptionPane.YES_NO_OPTION);
         if (userAnswer == JOptionPane.YES_OPTION) {
