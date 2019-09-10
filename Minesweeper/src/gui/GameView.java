@@ -12,12 +12,24 @@ public class GameView {
     private Game game;
     private GameFrame gameFrame;
     private GameMouseClickListener mouseClickListener = new GameMouseClickListener();
-    private GameKeyListener gameKeyListener = new GameKeyListener();
     private int rowsCount;
     private int colsCount;
     private JButton[][] cells;
     private HighScoresTable table = new HighScoresTable();
     private String path = "./Minesweeper/src/resources/";
+
+    private ImageIcon bomb = new ImageIcon(path + "bomb.png");
+    private ImageIcon empty = new ImageIcon(path + "empty.png");
+    private ImageIcon one = new ImageIcon(path + "1.png");
+    private ImageIcon two = new ImageIcon(path + "2.png");
+    private ImageIcon three = new ImageIcon(path + "3.png");
+    private ImageIcon four = new ImageIcon(path + "4.png");
+    private ImageIcon five = new ImageIcon(path + "5.png");
+    private ImageIcon six = new ImageIcon(path + "6.png");
+    private ImageIcon seven = new ImageIcon(path + "7.png");
+    private ImageIcon eight = new ImageIcon(path + "8.png");
+    private ImageIcon flag = new ImageIcon(path + "flag.png");
+    private ImageIcon brokenFlag = new ImageIcon(path + "brokenFag.png");
 
     public GameView() {
         SwingUtilities.invokeLater(this::run);
@@ -36,14 +48,13 @@ public class GameView {
                 JButton cell = new JButton();
                 cell.setMaximumSize(new Dimension(30, 30));
                 cell.addMouseListener(mouseClickListener);
-                cell.addKeyListener(gameKeyListener);
                 gameFrame.getGameField().add(cell);
                 cells[i][j] = cell;
             }
         }
     }
 
-    private class GameMouseClickListener implements MouseListener {
+    private class GameMouseClickListener extends MouseAdapter {
         private int down;
         private int across;
         private int prevDown;
@@ -63,12 +74,6 @@ public class GameView {
                     }
                 }
             }
-        }
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-
-
         }
 
         @Override
@@ -141,44 +146,6 @@ public class GameView {
                 }
             }
         }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-
-        }
-    }
-
-    private class GameKeyListener implements KeyListener {
-        @Override
-        public void keyTyped(KeyEvent e) {
-
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            GameMenu gameMenu = gameFrame.getGameMenu();
-
-            if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_N) {
-                gameMenu.startNewGame();
-            } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_O) {
-                gameMenu.changeParameters();
-            } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S) {
-                gameMenu.showGameInfo();
-            } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_R) {
-                gameMenu.showHighScoresTable();
-            } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_E) {
-                gameMenu.gameExit();
-            }
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-
-        }
     }
 
     private void update() {
@@ -190,41 +157,41 @@ public class GameView {
                     cells[i][j].setBackground(color);
 
                     if (game.isMine(i, j)) {
-                        cells[i][j].setIcon(new ImageIcon(path + "bomb.png"));
+                        cells[i][j].setIcon(bomb);
                     } else {
                         switch (game.calcMines(i, j)) {
                             case 0:
-                                cells[i][j].setIcon(new ImageIcon(path + "empty.png"));
+                                cells[i][j].setIcon(empty);
                                 break;
                             case 1:
-                                cells[i][j].setIcon(new ImageIcon(path + "1.png"));
+                                cells[i][j].setIcon(one);
                                 break;
                             case 2:
-                                cells[i][j].setIcon(new ImageIcon(path + "2.png"));
+                                cells[i][j].setIcon(two);
                                 break;
                             case 3:
-                                cells[i][j].setIcon(new ImageIcon(path + "3.png"));
+                                cells[i][j].setIcon(three);
                                 break;
                             case 4:
-                                cells[i][j].setIcon(new ImageIcon(path + "4.png"));
+                                cells[i][j].setIcon(four);
                                 break;
                             case 5:
-                                cells[i][j].setIcon(new ImageIcon(path + "5.png"));
+                                cells[i][j].setIcon(five);
                                 break;
                             case 6:
-                                cells[i][j].setIcon(new ImageIcon(path + "6.png"));
+                                cells[i][j].setIcon(six);
                                 break;
                             case 7:
-                                cells[i][j].setIcon(new ImageIcon(path + "7.png"));
+                                cells[i][j].setIcon(seven);
                                 break;
                             case 8:
-                                cells[i][j].setIcon(new ImageIcon(path + "8.png"));
+                                cells[i][j].setIcon(eight);
                                 break;
                         }
                     }
                 } else {
                     if (game.isFlag(i, j)) {
-                        cells[i][j].setIcon(new ImageIcon(path + "flag.png"));
+                        cells[i][j].setIcon(flag);
                     } else {
                         cells[i][j].setIcon(null);
                         cells[i][j].setBackground(null);
@@ -242,15 +209,15 @@ public class GameView {
 
                 if (game.isFlag(i, j)) {
                     if (game.isMine(i, j)) {
-                        cells[i][j].setIcon(new ImageIcon(path + "flag.png"));
+                        cells[i][j].setIcon(flag);
                         foundedMines++;
                     } else {
-                        cells[i][j].setIcon(new ImageIcon(path + "brokenFag.png"));
+                        cells[i][j].setIcon(brokenFlag);
                     }
                 } else if (game.isMine(i, j)) {
-                    cells[i][j].setIcon(new ImageIcon(path + "bomb.png"));
+                    cells[i][j].setIcon(bomb);
                 } else {
-                    cells[i][j].setIcon(new ImageIcon(path + "empty.png"));
+                    cells[i][j].setIcon(empty);
                 }
             }
         }
@@ -334,7 +301,6 @@ public class GameView {
                     JButton cell = new JButton();
                     cell.setMaximumSize(new Dimension(30, 30));
                     cell.addMouseListener(mouseClickListener);
-                    cell.addKeyListener(gameKeyListener);
                     gameFrame.getGameField().add(cell);
                     cells[i][j] = cell;
                 }

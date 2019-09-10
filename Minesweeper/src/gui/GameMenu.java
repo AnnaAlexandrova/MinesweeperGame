@@ -5,6 +5,8 @@ import game.HighScoresTable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
 
 class GameMenu extends JMenuBar {
@@ -16,28 +18,33 @@ class GameMenu extends JMenuBar {
 
         JMenuItem newGame = new JMenuItem("Новая игра CTRL + N");
         newGame.addActionListener(e -> startNewGame());
+        newGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
         menu.add(newGame);
 
         JMenuItem options = new JMenuItem("Настройки CTRL + O");
         options.addActionListener(e -> changeParameters());
+        options.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
         menu.add(options);
 
         JMenuItem about = new JMenuItem("Справка CTRL + S");
         about.addActionListener(e -> showGameInfo());
+        about.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
         menu.add(about);
 
         JMenuItem highScores = new JMenuItem("Лучшие результаты CTRL + R");
         highScores.addActionListener(e -> showHighScoresTable());
+        highScores.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
         menu.add(highScores);
 
         JMenuItem exit = new JMenuItem("Выход Ctrl + E");
         exit.addActionListener(e -> gameExit());
+        exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
         menu.add(exit);
 
         add(menu);
     }
 
-    void startNewGame() {
+   private void startNewGame() {
         int userAnswer = JOptionPane.showConfirmDialog(this, "Начать новую игру?",
                 "Окно подтверждения", JOptionPane.YES_NO_OPTION);
         if (userAnswer == JOptionPane.YES_OPTION) {
@@ -49,7 +56,7 @@ class GameMenu extends JMenuBar {
         }
     }
 
-    void changeParameters() {
+    private void changeParameters() {
         int result = JOptionPane.showConfirmDialog(this, "Хотите изменить параметры игры?",
                 "Параметры игры", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
@@ -57,7 +64,7 @@ class GameMenu extends JMenuBar {
             Object[] fieldWidth = new Object[30];
             int x = 0;
             for (int i = 0; i < fieldWidth.length; i++) {
-                x += 1;
+                x++;
                 fieldWidth[i] = Integer.toString(x);
             }
 
@@ -68,7 +75,7 @@ class GameMenu extends JMenuBar {
             Object[] fieldHeight = new Object[16];
             int y = 0;
             for (int i = 0; i < fieldHeight.length; i++) {
-                y += 1;
+                y++;
                 fieldHeight[i] = Integer.toString(y);
             }
 
@@ -79,7 +86,7 @@ class GameMenu extends JMenuBar {
             Object[] mines = new Object[Integer.parseInt(height) * Integer.parseInt(width) / 2];
             int z = 0;
             for (int i = 0; i < mines.length; i++) {
-                z += 1;
+                z++;
                 mines[i] = Integer.toString(z);
             }
 
@@ -91,7 +98,7 @@ class GameMenu extends JMenuBar {
         }
     }
 
-    void showGameInfo() {
+   private void showGameInfo() {
         AboutGame aboutGame = new AboutGame();
         UIManager.put("OptionPane.okButtonText", "Далее");
 
@@ -117,7 +124,7 @@ class GameMenu extends JMenuBar {
         }
     }
 
-    void showHighScoresTable() {
+  private void showHighScoresTable() {
         JTable table = new JTable(5, 1);
         table.setShowGrid(false);
         Font font = new Font("Verdana", Font.BOLD, 12);
@@ -135,7 +142,7 @@ class GameMenu extends JMenuBar {
         }
     }
 
-    void gameExit() {
+    private void gameExit() {
         int userAnswer = JOptionPane.showConfirmDialog(this, "Выйти из игры?",
                 "Окно подтверждения", JOptionPane.YES_NO_OPTION);
         if (userAnswer == JOptionPane.YES_OPTION) {

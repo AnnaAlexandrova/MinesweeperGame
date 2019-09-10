@@ -88,10 +88,6 @@ public class GameFrame extends JFrame {
         return minesCountLabel;
     }
 
-    GameMenu getGameMenu() {
-        return gameMenu;
-    }
-
     void setWidth(int colsCount) {
         this.width = colsCount * CELL_SIZE + 30;
     }
