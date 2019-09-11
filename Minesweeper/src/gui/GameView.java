@@ -233,10 +233,6 @@ public class GameView {
                     if (game.isMine(i + down, j + across)) {
                         if (game.isFlag(i + down, j + across)) {
                             count++;
-                        } else {
-                            gameEnd();
-                            youLose();
-                            break;
                         }
                     } else if (game.isFlag(i + down, j + across)) {
                         return;
