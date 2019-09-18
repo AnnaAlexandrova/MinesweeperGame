@@ -64,7 +64,6 @@ public class HighScoresTable {
                 System.out.println(record);
             }
         } catch (FileNotFoundException e) {
-            System.out.println("В этой игре еще никто не побеждал");
         }
     }
 

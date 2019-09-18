@@ -16,27 +16,27 @@ class GameMenu extends JMenuBar {
         this.game = game;
         JMenu menu = new JMenu("Меню");
 
-        JMenuItem newGame = new JMenuItem("Новая игра CTRL + N");
+        JMenuItem newGame = new JMenuItem("Новая игра");
         newGame.addActionListener(e -> startNewGame());
         newGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
         menu.add(newGame);
 
-        JMenuItem options = new JMenuItem("Настройки CTRL + O");
+        JMenuItem options = new JMenuItem("Настройки");
         options.addActionListener(e -> changeParameters());
         options.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
         menu.add(options);
 
-        JMenuItem about = new JMenuItem("Справка CTRL + S");
+        JMenuItem about = new JMenuItem("Справка");
         about.addActionListener(e -> showGameInfo());
         about.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
         menu.add(about);
 
-        JMenuItem highScores = new JMenuItem("Лучшие результаты CTRL + R");
+        JMenuItem highScores = new JMenuItem("Лучшие результаты");
         highScores.addActionListener(e -> showHighScoresTable());
         highScores.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
         menu.add(highScores);
 
-        JMenuItem exit = new JMenuItem("Выход Ctrl + E");
+        JMenuItem exit = new JMenuItem("Выход");
         exit.addActionListener(e -> gameExit());
         exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
         menu.add(exit);
